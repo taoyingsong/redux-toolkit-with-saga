@@ -1,6 +1,6 @@
 {
   "name": "redux-toolkit-with-saga",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "organization redux toolkit with saga",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

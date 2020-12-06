@@ -79,7 +79,6 @@ export const {
 export const {
   fetchTestList
 } = testSageSlice.effectActions; // action with caseSagas
-export default testSageSlice.reducer;
 export const testSagasWatchers = testSageSlice.watchers;
-
+export default testSageSlice.reducer;
 ```
