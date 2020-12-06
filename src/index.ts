@@ -110,12 +110,6 @@ export function createSliceWithSaga<Effects extends SliceEffects>(options: Slice
        *
        */
       actionCreators[effectKey] = createAction(watcherType);
-
-      // saga的这部分可以不用prepareCallback， RTK的action部分可以有
-      // actionCreators[effectKey] = prepareCallback
-      //     ? createAction(watcherType, prepareCallback)
-      //     : createAction(watcherType);
-
       sagas.push(getWatcher(watcherType, effects[effectKey]));
     });
   }
