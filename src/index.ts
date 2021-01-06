@@ -35,11 +35,11 @@ export function getWatcherType(sliceName: string, effectKey: string): string {
 }
 
 export function getWatcher(
+    sageType: string,
     watcherType: string,
     effect: SliceEffect,
 ): Watcher {
-  let type = 'takeEvery';
-  switch (type) {
+  switch (sageType) {
     case 'takeLatest':
       return function* () {
         yield takeLatest(watcherType, effect);
@@ -88,7 +88,7 @@ export function createSliceWithSaga<
        *
        */
       actionCreators[effectKey] = createAction(watcherType);
-      sagas.push(getWatcher(watcherType, effects[effectKey]));
+      sagas.push(getWatcher('takeEvery', watcherType, effects[effectKey]));
     });
   }
 
