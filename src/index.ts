@@ -1,10 +1,4 @@
-import {
-  createSlice,
-  CreateSliceOptions,
-  SliceCaseReducers,
-  Slice,
-  createAction,
-} from '@reduxjs/toolkit';
+import { createSlice, CreateSliceOptions, SliceCaseReducers, Slice, createAction } from '@reduxjs/toolkit';
 import { takeLatest, takeEvery, call, all, take, fork } from 'redux-saga/effects';
 
 export type SliceEffect<A = any> = (args?: any) => A;
@@ -13,11 +7,11 @@ export type SliceEffects = {
 };
 
 export interface SliceWithSagaOptions<
-    State = any,
-    CR extends SliceCaseReducers<State> = SliceCaseReducers<State>,
-    Name extends string = string,
-    Effects extends SliceEffects = SliceEffects
- > extends CreateSliceOptions {
+  State = any,
+  CR extends SliceCaseReducers<State> = SliceCaseReducers<State>,
+  Name extends string = string,
+  Effects extends SliceEffects = SliceEffects
+> extends CreateSliceOptions {
   effects?: Effects;
 }
 
@@ -34,11 +28,7 @@ export function getWatcherType(sliceName: string, effectKey: string): string {
   return `${sliceName}/${effectKey}`;
 }
 
-export function getWatcher(
-    sageType: string,
-    watcherType: string,
-    effect: SliceEffect,
-): Watcher {
+export function getWatcher(sageType: string, watcherType: string, effect: SliceEffect): Watcher {
   switch (sageType) {
     case 'takeLatest':
       return function* () {
@@ -51,13 +41,11 @@ export function getWatcher(
   }
 }
 export function createSliceWithSaga<
-    State,
-    CaseReducers extends SliceCaseReducers<State>,
-    Name extends string = string,
-    Effects extends SliceEffects = SliceEffects
-  >(
-    options: SliceWithSagaOptions<State, CaseReducers, Name, Effects>
-): SagaSlice {
+  State,
+  CaseReducers extends SliceCaseReducers<State>,
+  Name extends string = string,
+  Effects extends SliceEffects = SliceEffects
+>(options: SliceWithSagaOptions<State, CaseReducers, Name, Effects>): SagaSlice {
   const { effects, name: sliceName } = options;
 
   delete options.effects;

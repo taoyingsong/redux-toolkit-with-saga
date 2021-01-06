@@ -1,6 +1,6 @@
 {
   "name": "redux-toolkit-with-saga",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "organization redux toolkit with saga",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,11 @@
     "type": "git",
     "url": "git+https://github.com/taoyingsong/redux-toolkit-with-saga.git"
   },
-  "keywords": ["redux-toolkit", "toolkit", "saga"],
+  "keywords": [
+    "redux-toolkit",
+    "toolkit",
+    "saga"
+  ],
   "author": "taoyingsong",
   "license": "ISC",
   "devDependencies": {
