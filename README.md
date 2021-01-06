@@ -1,3 +1,4 @@
+
 # README
 #API:
 ##Parameters 
@@ -5,12 +6,16 @@
 function createSliceWithSaga({
   // A name, used in action types
   name: string,
+
   // The initial state for the reducer
   initialState: any,
+
   // An object of "case reducers". Key names will be used to generate actions.
   reducers: Object<string, ReducerFunction | ReducerAndPrepareObject>
-  // generator functions
-  effects: Object<string, GeneratorFunction>,
+
+  // effect functions
+  effects: Object<string, SliceEffect<any>>,
+
   // A "builder callback" function used to add more reducers, or
   // an additional object of "case reducers", where the keys should be other
   // action types
@@ -27,8 +32,8 @@ function createSliceWithSaga({
     reducer : ReducerFunction,
     actions : Record<string, ActionCreator>,
     caseReducers: Record<string, CaseReducer>,
-    watchers: SagaWatcherFunction,
-    effectActions: Record<string, ActionCreator>,
+    watchers: Watchers,
+    effectActions: SliceEffects,
 }
 ```
 
@@ -78,7 +83,7 @@ export const {
 } = testSageSlice.actions;
 export const {
   fetchTestList
-} = testSageSlice.effectActions; // action with caseSagas
+} = testSageSlice.effectActions;
 export const testSagasWatchers = testSageSlice.watchers;
 export default testSageSlice.reducer;
 ```
