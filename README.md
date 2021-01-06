@@ -1,8 +1,21 @@
 
 # README
-#API:
-##Parameters 
+# Installation
 ```
+yarn add redux-toolkit-with-saga
+# or 
+npm install redux-toolkit-with-saga --save
+```
+
+# Introduction
+1. This package integrate Saga into RTK, you can use Saga like Demo.(The 
+structure is a little like [Dva](https://dvajs.com/guide/)) <br />
+2. This package is especially suitable for large projects that need to be gradually transformed.(
+You can collect the Watchers returned in the return value, and then inject it into Saga)
+
+# API:
+## Parameters 
+```js
 function createSliceWithSaga({
   // A name, used in action types
   name: string,
@@ -25,8 +38,8 @@ function createSliceWithSaga({
 })
 ```
 
-##Return Value
-```
+## Return Value
+```js
 {
     name : string,
     reducer : ReducerFunction,
@@ -37,8 +50,8 @@ function createSliceWithSaga({
 }
 ```
 
-#Demo
-```
+# Demo
+```js
 import { fetchTestData } from './api';
 const testInitialState = {...}
 const testSageSlice = createSliceWithSaga({
