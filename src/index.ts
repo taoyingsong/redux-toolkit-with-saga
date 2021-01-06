@@ -7,9 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { takeLatest, takeEvery, call, all, take, fork } from 'redux-saga/effects';
 
-export type SliceEffect<A = any> = {
-  (args?: any): A;
-}
+export type SliceEffect<A = any> = (args?: any) => A;
 export type SliceEffects = {
   [Key: string]: SliceEffect<any>;
 };
@@ -23,9 +21,7 @@ export interface SliceWithSagaOptions<
   effects?: Effects;
 }
 
-interface Watcher {
-  (): any;
-}
+type Watcher = () => any;
 
 export type Watchers = Watcher[];
 
