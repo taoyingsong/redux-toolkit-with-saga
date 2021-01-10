@@ -1,5 +1,5 @@
 import { createSlice, CreateSliceOptions, SliceCaseReducers, Slice, createAction } from '@reduxjs/toolkit';
-import { takeLatest, takeEvery, call, all, take, fork } from 'redux-saga/effects';
+import { takeLatest, takeEvery, CallEffect, call, all, take, fork } from 'redux-saga/effects';
 
 export type SliceEffect<A = any> = (args?: any) => A;
 export type SliceEffects = {
@@ -17,11 +17,23 @@ export interface SliceWithSagaOptions<
 
 type Watcher = () => any;
 
-export type Watchers = Watcher[];
+export type CallEffects = CallEffect[];
 
 export interface SagaSlice extends Slice {
   effectActions: SliceEffects;
-  watchers: Watchers;
+  callEffects: CallEffects;
+}
+
+export function createRootSaga(
+    callEffects: CallEffects[],
+): any {
+  let rootCallEffects: CallEffects = [];
+  callEffects.forEach((callEffect: CallEffects) => {
+    rootCallEffects = [...rootCallEffects, ...callEffect];
+  });
+  return function* () {
+    yield all(rootCallEffects);
+  };
 }
 
 export function getWatcherType(sliceName: string, effectKey: string): string {
@@ -52,7 +64,7 @@ export function createSliceWithSaga<
   const _sliceResult = createSlice(options);
 
   const actionCreators: Record<string, SliceEffect<any>> = {};
-  const sagas: Watchers = [];
+  const callEffects: CallEffects = [];
 
   if (effects) {
     const effectsNames = Object.keys(effects);
@@ -76,12 +88,12 @@ export function createSliceWithSaga<
        *
        */
       actionCreators[effectKey] = createAction(watcherType);
-      sagas.push(getWatcher('takeEvery', watcherType, effects[effectKey]));
+      callEffects.push(call(getWatcher('takeEvery', watcherType, effects[effectKey])));
     });
   }
 
   return {
-    watchers: sagas,
+    callEffects,
     effectActions: actionCreators,
     ..._sliceResult,
   };
