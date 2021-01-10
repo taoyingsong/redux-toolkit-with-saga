@@ -11,7 +11,7 @@ npm install redux-toolkit-with-saga --save
 1. This package integrate Saga into RTK, you can use Saga like Demo.(The 
 structure is a little like [Dva](https://dvajs.com/guide/)) <br />
 2. This package is especially suitable for large projects that need to be gradually transformed.(
-You can collect the Watchers returned in the return value, and then inject it into Saga)
+You can collect the callEffects from the return values and use as needed)
 
 # API:
 ## Parameters 
@@ -102,7 +102,7 @@ export default testSageSlice.reducer;
 ```
 
 ```js
-// you can use create rootSaga like this
+// you can create root saga like this
 import { createRootSaga } from 'redux-toolkit-with-saga'
 const rootSaga = createRootSaga([
   testCallEffects
