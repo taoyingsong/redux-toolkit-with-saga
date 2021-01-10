@@ -45,7 +45,7 @@ function createSliceWithSaga({
     reducer : ReducerFunction,
     actions : Record<string, ActionCreator>,
     caseReducers: Record<string, CaseReducer>,
-    watchers: Watchers,
+    callEffects: CallEffects,
     effectActions: SliceEffects,
 }
 ```
@@ -97,6 +97,14 @@ export const {
 export const {
   fetchTestList
 } = testSageSlice.effectActions;
-export const testSagasWatchers = testSageSlice.watchers;
+export const testCallEffects = testSageSlice.callEffects;
 export default testSageSlice.reducer;
+```
+
+```js
+// you can use create rootSaga like this
+import { createRootSaga } from 'redux-toolkit-with-saga'
+const rootSaga = createRootSaga([
+  testCallEffects
+]);
 ```
