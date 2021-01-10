@@ -24,9 +24,7 @@ export interface SagaSlice extends Slice {
   callEffects: CallEffects;
 }
 
-export function createRootSaga(
-    callEffects: CallEffects[],
-): any {
+export function createRootSaga(callEffects: CallEffects[]): any {
   let rootCallEffects: CallEffects = [];
   callEffects.forEach((callEffect: CallEffects) => {
     rootCallEffects = [...rootCallEffects, ...callEffect];
