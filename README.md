@@ -8,13 +8,13 @@ npm install redux-toolkit-with-saga --save
 ```
 
 # Introduction
-1. This package integrate Saga into RTK, you can use Saga like Demo.(The 
-structure is a little like [Dva](https://dvajs.com/guide/)) <br />
+1. With this package you can integrate Saga into RTK, 
+organize code like the structure of [Dva](https://dvajs.com/guide/)) or use Saga separately from RTK<br />
 2. This package is especially suitable for large projects that need to be gradually transformed.(
 You can collect the callEffects from the return values and use as needed)
 
 # API:
-## Parameters 
+## 1. createSliceWithSaga：
 ```js
 function createSliceWithSaga({
   // A name, used in action types
@@ -37,8 +37,7 @@ function createSliceWithSaga({
   | ((builder: ActionReducerMapBuilder<State>) => void)
 })
 ```
-
-## Return Value
+**Return Value Type**
 ```js
 {
     name : string,
@@ -50,11 +49,30 @@ function createSliceWithSaga({
 }
 ```
 
-# Demo
+## 2. createSagaSlice:
+```js
+function createSagaSlice({
+  // A name, used in action types
+  name: string,
+
+  // effect functions
+  effects: Object<string, SliceEffect<any>>,
+
+})
+```
+**Return Value Type**
+```js
+{
+    callEffects: CallEffects,
+    effectActions: SliceEffects,
+}
+```
+
+# Demo1
 ```js
 import { fetchTestData } from './api';
 const testInitialState = {...}
-const testSageSlice = createSliceWithSaga({
+const testSliceWithSaga = createSliceWithSaga({
   name: 'test',
   initialState: testInitialState,
   reducers: {
@@ -93,12 +111,70 @@ export const {
   getTestStart,
   getTestSuccess,
   getTestFailure
-} = testSageSlice.actions;
+} = testSliceWithSaga.actions;
 export const {
   fetchTestList
-} = testSageSlice.effectActions;
-export const testCallEffects = testSageSlice.callEffects;
-export default testSageSlice.reducer;
+} = testSliceWithSaga.effectActions;
+export const testCallEffects = testSliceWithSaga.callEffects;
+export default testSliceWithSaga.reducer;
+```
+
+```js
+// you can create root saga like this
+import { createRootSaga } from 'redux-toolkit-with-saga'
+const rootSaga = createRootSaga([
+  testCallEffects
+]);
+```
+
+# Demo2
+```js
+import { fetchTestData } from './api';
+const testInitialState = {...}
+const testSlice = createSlice({
+  name: 'test',
+  initialState: testInitialState,
+  reducers: {
+    getTestStart(state: TestState) {
+      state.isLoading = true;
+      state.error = null;
+    },
+    getTestSuccess(state, { payload }: PayloadAction<any>) {
+        ...
+    },
+    getTestFailure(state: TestState) {
+      state.isLoading = true;
+      state.error = null;
+    },
+  }
+});
+
+export const {
+  getTestStart,
+  getTestSuccess,
+  getTestFailure
+} = testSlice.actions;
+export default testSlice.reducer;
+
+const testSagaSlice = createSagaSlice({
+  name: testSlice.name,
+  effects: {
+    * fetchTestList({ payload }) {
+      yield put(getTestStart());
+      try {
+        const result = yield call(fetchTestData, payload);
+        yield put(getTestSuccess(result));
+      } catch (err) {
+        yield put(getTestFailure(err.toString()));
+      }
+    }
+  }
+})
+
+export const {
+  fetchTestList
+} = testSagaSlice.effectActions;
+export const testCallEffects = testSagaSlice.callEffects;
 ```
 
 ```js

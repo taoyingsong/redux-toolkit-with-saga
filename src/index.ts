@@ -1,28 +1,13 @@
 import { createSlice, CreateSliceOptions, SliceCaseReducers, Slice, createAction } from '@reduxjs/toolkit';
 import { takeLatest, takeEvery, CallEffect, call, all, take, fork } from 'redux-saga/effects';
 
+type Watcher = () => any;
+
 export type SliceEffect<A = any> = (args?: any) => A;
 export type SliceEffects = {
   [Key: string]: SliceEffect<any>;
 };
-
-export interface SliceWithSagaOptions<
-  State = any,
-  CR extends SliceCaseReducers<State> = SliceCaseReducers<State>,
-  Name extends string = string,
-  Effects extends SliceEffects = SliceEffects
-> extends CreateSliceOptions {
-  effects?: Effects;
-}
-
-type Watcher = () => any;
-
 export type CallEffects = CallEffect[];
-
-export interface SagaSlice extends Slice {
-  effectActions: SliceEffects;
-  callEffects: CallEffects;
-}
 
 export function createRootSaga(callEffects: CallEffects[]): any {
   let rootCallEffects: CallEffects = [];
@@ -50,12 +35,29 @@ export function getWatcher(sageType: string, watcherType: string, effect: SliceE
       };
   }
 }
+
+/**
+ * dva style
+ * @param options
+ */
+export interface SliceWithSagaOptions<
+    State = any,
+    CR extends SliceCaseReducers<State> = SliceCaseReducers<State>,
+    Name extends string = string,
+    Effects extends SliceEffects = SliceEffects
+    > extends CreateSliceOptions {
+  effects?: Effects;
+}
+export interface SliceSaga extends Slice {
+  effectActions: SliceEffects;
+  callEffects: CallEffects;
+}
 export function createSliceWithSaga<
   State,
   CaseReducers extends SliceCaseReducers<State>,
   Name extends string = string,
   Effects extends SliceEffects = SliceEffects
->(options: SliceWithSagaOptions<State, CaseReducers, Name, Effects>): SagaSlice {
+>(options: SliceWithSagaOptions<State, CaseReducers, Name, Effects>): SliceSaga {
   const { effects, name: sliceName } = options;
 
   delete options.effects;
@@ -94,5 +96,44 @@ export function createSliceWithSaga<
     callEffects,
     effectActions: actionCreators,
     ..._sliceResult,
+  };
+}
+
+/**
+ * plugin style
+ */
+export interface SagaSliceOptions<
+    Name extends string = string,
+    Effects extends SliceEffects = SliceEffects
+> {
+  name: Name;
+  effects: Effects;
+}
+export interface SagaSlice {
+  effectActions: SliceEffects;
+  callEffects: CallEffects;
+}
+export function createSagaSlice<
+    Name extends string = string,
+    Effects extends SliceEffects = SliceEffects
+    >(options: SagaSliceOptions<Name, Effects>): SagaSlice {
+  const { effects, name: sliceName } = options;
+
+  const actionCreators: Record<string, SliceEffect<any>> = {};
+  const callEffects: CallEffects = [];
+
+  if (effects) {
+    const effectsNames = Object.keys(effects);
+    effectsNames.forEach((effectKey) => {
+      const watcherType = getWatcherType(sliceName, effectKey);
+
+      actionCreators[effectKey] = createAction(watcherType);
+      callEffects.push(call(getWatcher('takeEvery', watcherType, effects[effectKey])));
+    });
+  }
+
+  return {
+    callEffects,
+    effectActions: actionCreators,
   };
 }
