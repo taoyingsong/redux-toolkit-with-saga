@@ -41,11 +41,11 @@ export function getWatcher(sageType: string, watcherType: string, effect: SliceE
  * @param options
  */
 export interface SliceWithSagaOptions<
-    State = any,
-    CR extends SliceCaseReducers<State> = SliceCaseReducers<State>,
-    Name extends string = string,
-    Effects extends SliceEffects = SliceEffects
-    > extends CreateSliceOptions {
+  State = any,
+  CR extends SliceCaseReducers<State> = SliceCaseReducers<State>,
+  Name extends string = string,
+  Effects extends SliceEffects = SliceEffects
+> extends CreateSliceOptions {
   effects?: Effects;
 }
 export interface SliceSaga extends Slice {
@@ -102,10 +102,7 @@ export function createSliceWithSaga<
 /**
  * plugin style
  */
-export interface SagaSliceOptions<
-    Name extends string = string,
-    Effects extends SliceEffects = SliceEffects
-> {
+export interface SagaSliceOptions<Name extends string = string, Effects extends SliceEffects = SliceEffects> {
   name: Name;
   effects: Effects;
 }
@@ -113,10 +110,9 @@ export interface SagaSlice {
   effectActions: SliceEffects;
   callEffects: CallEffects;
 }
-export function createSagaSlice<
-    Name extends string = string,
-    Effects extends SliceEffects = SliceEffects
-    >(options: SagaSliceOptions<Name, Effects>): SagaSlice {
+export function createSagaSlice<Name extends string = string, Effects extends SliceEffects = SliceEffects>(
+  options: SagaSliceOptions<Name, Effects>,
+): SagaSlice {
   const { effects, name: sliceName } = options;
 
   const actionCreators: Record<string, SliceEffect<any>> = {};
