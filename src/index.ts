@@ -3,9 +3,9 @@ import { takeLatest, takeEvery, CallEffect, call, all, take, fork } from 'redux-
 
 type Watcher = () => any;
 
-export type SliceEffect<A = any> = (args?: any) => A;
-export type SliceEffects = {
-  [Key: string]: SliceEffect<any>;
+export declare type SliceEffect<T = any, A = any> = (args?: T) => A;
+export declare type SliceEffects<T = any> = {
+  [Key: string]: SliceEffect<T>;
 };
 export type CallEffects = CallEffect[];
 
@@ -106,13 +106,13 @@ export interface SagaSliceOptions<Name extends string = string, Effects extends 
   name: Name;
   effects: Effects;
 }
-export interface SagaSlice {
-  effectActions: SliceEffects;
-  callEffects: CallEffects;
-}
-export function createSagaSlice<Name extends string = string, Effects extends SliceEffects = SliceEffects>(
-  options: SagaSliceOptions<Name, Effects>,
-): SagaSlice {
+export interface SagaSlice<T = any> {
+	effectActions: SliceEffects<T>;
+	callEffects: CallEffects;
+  }
+  export function createSagaSlice<T = any, Name extends string = string, Effects extends SliceEffects = SliceEffects>(
+	options: SagaSliceOptions< Name, Effects>,
+  ): SagaSlice<T>  {
   const { effects, name: sliceName } = options;
 
   const actionCreators: Record<string, SliceEffect<any>> = {};
