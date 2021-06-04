@@ -50,13 +50,13 @@ function createSliceWithSaga({
 ```
 
 ## 2. createSagaSlice:
-```js
-function createSagaSlice({
+```ts
+function createSagaSlice<T = any>({
   // A name, used in action types
   name: string,
 
   // effect functions
-  effects: Object<string, SliceEffect<any>>,
+  effects: Object<string, SliceEffect<T>>,
 
 })
 ```
@@ -156,6 +156,12 @@ export const {
 } = testSlice.actions;
 export default testSlice.reducer;
 
+```
+
+
+#### Without type - javascript
+
+```js
 const testSagaSlice = createSagaSlice({
   name: testSlice.name,
   effects: {
@@ -177,10 +183,45 @@ export const {
 export const testCallEffects = testSagaSlice.callEffects;
 ```
 
+#### With interface - typescript
+
+```ts
+const interface Person { 
+  name: string; 
+  age: number;
+}
+
+const personSagaSlice = createSagaSlice<Person>({
+  name: testSlice.name,
+  effects: {
+    * fetchPerson(action: PayloadAction<Person>): Generator<any, void, any>{ 
+     ...
+    }
+  }
+})
+
+export const {
+  fetchPerson
+} = personSagaSlice.effectActions;
+export const personCallEffects = personSagaSlice.callEffects;
+
+```
+
 ```js
 // you can create root saga like this
 import { createRootSaga } from 'redux-toolkit-with-saga'
 const rootSaga = createRootSaga([
-  testCallEffects
+  testCallEffects,
+  personCallEffects
 ]);
+```
+
+## Usage  
+
+```ts
+ ...
+
+ // if use typescript the args will require Person interface 
+ dispatch(fetchPerson({ name: "Paulo", age: 31 }));
+
 ```
